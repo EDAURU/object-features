@@ -71,9 +71,11 @@ Object.prototype.map = function (fun, newThis) {
 	return arr;
 };
 
-Object.prototype.map = function (fun, newThis) {
+
+//Applies a function simultaneously to two values from a object
+Object.prototype.reduce = function (fun, newThis) {
 	var _this = newThis || this,
-		arr = [],
+		attr = [],
 		temp;
 
 	if (this == null)
@@ -83,11 +85,18 @@ Object.prototype.map = function (fun, newThis) {
 
 	for (var property in _this) {
 		if (_this.hasOwnProperty(property) && typeof _this[property] !== "function") {
-			temp = fun.call(_this, _this[property], property, _this);
-			if (temp !== undefined) arr.push(temp);
+			attr.push(property);
+			//temp = fun.call(_this, _this[property], property, _this);
+			//if (temp !== undefined) arr.push(temp);
 		}
 	}
-	return arr;
+
+	temp = _this[attr[0]];
+	for (var i = 1; i < attr.length; i++) {
+		temp = fun.call(_this, temp, _this[attr[i]], attr[i], _this)
+	}
+
+	return temp;
 };
 
 //Examples.
@@ -117,9 +126,7 @@ console.log(a.map(function (element) {
 	if (element > 20) return element;
 }));
 
-
-var x = [[1, 2], [3, 4], [5, 6]];
-
-console.log(x.reduce(function (a, b) {
-	return a.concat(b);
+console.log(a.reduce(function (a, b) {
+	return a + b;
 }));
+
