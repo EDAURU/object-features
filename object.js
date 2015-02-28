@@ -86,8 +86,6 @@ Object.prototype.reduce = function (fun, newThis) {
 	for (var property in _this) {
 		if (_this.hasOwnProperty(property) && typeof _this[property] !== "function") {
 			attr.push(property);
-			//temp = fun.call(_this, _this[property], property, _this);
-			//if (temp !== undefined) arr.push(temp);
 		}
 	}
 
@@ -101,7 +99,25 @@ Object.prototype.reduce = function (fun, newThis) {
 
 //nested some this includes nested JSONs
 Object.prototype.nestedSome = function (fun, newThis) {
-	;
+	var _this = newThis || this;
+
+	if (this == null)
+		throw new TypeError('this is null or not defined');
+	if (typeof fun !== "function")
+		throw new TypeError(fun + " is not a function");
+
+	for (var property in _this) {
+		if (_this.hasOwnProperty(property) && typeof _this[property] !== "function") {
+			if (typeof _this[property] === "object") {
+				if (_this[property].nestedSome(fun, _this[property]))
+					return true;
+			} else {
+				if (fun.call(_this, _this[property], property, _this))
+					return true;
+			}
+		}
+	}
+	return false;
 };
 
 
@@ -146,3 +162,13 @@ console.log(a.map(function (element) {
 console.log(a.reduce(function (a, b) {
 	return a + b;
 }));
+
+console.log({
+	"x": 100,
+	"y": {
+		"x": 23,
+		"y": 900
+	}
+}.nestedSome(function (ele) {
+		return ele < 22;
+	}));
