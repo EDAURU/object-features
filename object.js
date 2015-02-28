@@ -99,9 +99,21 @@ Object.prototype.reduce = function (fun, newThis) {
 	return temp;
 };
 
-//Examples.
+//nested some this includes nested JSONs
+Object.prototype.nestedSome = function (fun, newThis) {
+	;
+};
+
+
+//Tests.
 var a = {
-	"x": 12,
+	"x": {
+		"x": {
+			"x": 25,
+			"y": 66
+		},
+		"y": 2333
+	},
 	"y": 23,
 	"z": 200,
 	"w": function () {
@@ -111,7 +123,12 @@ var a = {
 
 a.forEach(function (element, index, obj) {
 	console.log(element);
-	obj[index] += 2;
+	if (typeof obj[index] === "number")
+		obj[index] += 2;
+});
+
+a.forEach(function (element, index, obj) {
+	console.log(element);
 });
 
 console.log(a.some(function (element) {
@@ -123,10 +140,9 @@ console.log(a.every(function (element) {
 }));
 
 console.log(a.map(function (element) {
-	if (element > 20) return element;
+	if (element > 20 && typeof element === "number") return element;
 }));
 
 console.log(a.reduce(function (a, b) {
 	return a + b;
 }));
-
