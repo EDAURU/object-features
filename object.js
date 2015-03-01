@@ -97,7 +97,7 @@ Object.prototype.reduce = function (fun, newThis) {
 	return temp;
 };
 
-//nested some this includes nested JSONs
+//Nested some this includes nested JSONs
 Object.prototype.nestedSome = function (fun, newThis) {
 	var _this = newThis || this;
 
@@ -120,6 +120,10 @@ Object.prototype.nestedSome = function (fun, newThis) {
 	return false;
 };
 
+//Nested every this includes nested JSONs.
+Object.prototype.nestedEvery = function (fun, newThis) {
+	;
+};
 
 //Tests.
 var a = {
