@@ -125,6 +125,49 @@ Object.prototype.nestedEvery = function (fun, newThis) {
 	;
 };
 
+
+//watch...
+if (!Object.prototype.watch) {
+	Object.defineProperty(Object.prototype, "watch", {
+		enumerable: false,
+		configurable: true,
+		writable: false,
+		value: function (prop, handler) {
+			var oldval = this[prop],
+				newval = oldval,
+				getter = function () {
+					return newval;
+				},
+				setter = function (val) {
+					oldval = newval;
+					return newval = handler.call(this, prop, oldval, val);
+				};
+			if (delete this[prop]) { // can't watch constants
+				Object.defineProperty(this, prop, {
+					get: getter,
+					set: setter,
+					enumerable: true,
+					configurable: true
+				});
+			}
+		}
+	});
+}
+
+// object.unwatch
+if (!Object.prototype.unwatch) {
+	Object.defineProperty(Object.prototype, "unwatch", {
+		enumerable: false,
+		configurable: true,
+		writable: false,
+		value: function (prop) {
+			var val = this[prop];
+			delete this[prop]; // remove accessors
+			this[prop] = val;
+		}
+	});
+}
+
 //Tests.
 var a = {
 	"x": {
@@ -176,3 +219,27 @@ console.log({
 }.nestedSome(function (ele) {
 		return ele < 22;
 	}));
+
+
+var d = {
+	"x": 0,
+	"y": 100
+};
+
+
+d.watch("x", function (id, prev, next) {
+	console.log(prev);
+	console.log(next);
+	return next;
+});
+
+d.watch("y", function (id, prev, next) {
+	console.log(prev);
+	console.log(next);
+	return next;
+});
+
+for (var i = 0; i < 100; i++) {
+	d.x++;
+	d.y--;
+}
