@@ -120,12 +120,6 @@ Object.prototype.nestedSome = function (fun, newThis) {
 	return false;
 };
 
-//Nested every this includes nested JSONs.
-Object.prototype.nestedEvery = function (fun, newThis) {
-	;
-};
-
-
 //watch...
 if (!Object.prototype.watch) {
 	Object.defineProperty(Object.prototype, "watch", {
